@@ -18,7 +18,7 @@ const (
 	ErrSignUp = 2000000 + iota
 	ErrSignUpUnknownEmail
 	ErrSignUpUnknownPhone
-	ErrSignUpUnknownEmailOrPhone
+	ErrSignUpUnknownEmailAndPhone
 	ErrSignUpEmailOrPhoneDuplicate
 )
 
@@ -28,7 +28,19 @@ const (
 	ErrSelectUserById
 	ErrSelectUserByEmailEmpty
 	ErrSelectUserByPhoneEmpty
-	ErrSelectUserUnknownEmailOrPhone
+	ErrSelectUserUnknownEmailAndPhone
+)
+
+// 用户登陆阶段错误
+const (
+	ErrSignIn = 2002000 + iota
+	ErrSignInUnknownEmailAndPhone
+	ErrSignInEmailNotExist
+	ErrSignInPhoneNotExist
+	ErrSignInWrongPwd
+	ErrSignInMaxRetries
+	ErrSignInUnsafe
+	ErrSignInDisabledStatus
 )
 
 var ErrMsgMap = map[int]string{
@@ -42,12 +54,21 @@ var ErrMsgMap = map[int]string{
 	ErrSignUp:                      "注册用户阶段错误",
 	ErrSignUpUnknownEmail:          "注册账号需要邮箱",
 	ErrSignUpUnknownPhone:          "注册账号需要手机号",
-	ErrSignUpUnknownEmailOrPhone:   "注册账号需要邮箱或手机号",
+	ErrSignUpUnknownEmailAndPhone:  "注册账号需要邮箱或手机号",
 	ErrSignUpEmailOrPhoneDuplicate: "您使用的手机号或邮箱已被注册",
 
-	ErrSelectUser:                    "查询用户信息错误",
-	ErrSelectUserById:                "通过该ID查询用户结果为空",
-	ErrSelectUserByEmailEmpty:        "通过该邮箱查询用户结果为空",
-	ErrSelectUserByPhoneEmpty:        "通过该手机查询用户结果为空",
-	ErrSelectUserUnknownEmailOrPhone: "查询用户信息需要邮箱或手机号",
+	ErrSelectUser:                     "查询用户信息错误",
+	ErrSelectUserById:                 "通过该ID查询用户结果为空",
+	ErrSelectUserByEmailEmpty:         "通过该邮箱查询用户结果为空",
+	ErrSelectUserByPhoneEmpty:         "通过该手机查询用户结果为空",
+	ErrSelectUserUnknownEmailAndPhone: "查询用户信息需要邮箱或手机号",
+
+	ErrSignIn:                     "用户登陆阶段错误",
+	ErrSignInUnknownEmailAndPhone: "登陆账号需要邮箱或手机号",
+	ErrSignInEmailNotExist:        "该邮箱不存在",
+	ErrSignInPhoneNotExist:        "该手机号不存在",
+	ErrSignInWrongPwd:             "密码错误",
+	ErrSignInMaxRetries:           "已达到最大登陆次数",
+	ErrSignInUnsafe:               "该次登陆有风险",
+	ErrSignInDisabledStatus:       "账户被封禁",
 }
