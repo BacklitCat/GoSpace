@@ -3,7 +3,6 @@ package client
 import (
 	"GoSpace/config"
 	"context"
-	"errors"
 	"github.com/go-pg/pg/v10"
 	"github.com/rs/zerolog/log"
 )
@@ -11,6 +10,7 @@ import (
 const (
 	INSERT = "INSERT"
 	UPDATE = "UPDATE"
+	SELECT = "SELECT"
 )
 
 type PostgreSQLClient struct {
@@ -28,7 +28,7 @@ func (p *PostgreSQLClient) Init(conf *config.ConfPgSQL) error {
 	p.DB = pg.Connect(p.Option)
 	err := p.DB.Ping(context.Background())
 	if err != nil {
-		log.Fatal().Err(err).Msg("PostgreSQLClient.Init: handle connection error")
+		log.Fatal().Err(err).Msg("PostgreSQLClient.Init: handle connection errno")
 	} else {
 		log.Info().Str("postgresql_dial_time_out", p.Option.DialTimeout.String()).
 			Str("postgresql_read_time_out", p.Option.ReadTimeout.String()).
@@ -40,16 +40,4 @@ func (p *PostgreSQLClient) Init(conf *config.ConfPgSQL) error {
 			Msg("PostgreSQLClient.Init: connection is successful")
 	}
 	return nil
-}
-
-func (p *PostgreSQLClient) DoRequest(interfaceName string, model, value any) (resp any, err error) {
-	switch interfaceName {
-	case INSERT:
-		resp, err = p.DB.Model(model).Insert(value)
-	case UPDATE:
-		resp, err = p.DB.Model(model).Update(value)
-	default:
-		return nil, errors.New("PostgreSQLClient.DoRequest: wrong interfaceName " + interfaceName)
-	}
-	return
 }
