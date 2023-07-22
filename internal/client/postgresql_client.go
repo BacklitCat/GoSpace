@@ -3,8 +3,14 @@ package client
 import (
 	"GoSpace/config"
 	"context"
+	"errors"
 	"github.com/go-pg/pg/v10"
 	"github.com/rs/zerolog/log"
+)
+
+const (
+	INSERT = "INSERT"
+	UPDATE = "UPDATE"
 )
 
 type PostgreSQLClient struct {
@@ -34,4 +40,16 @@ func (p *PostgreSQLClient) Init(conf *config.ConfPgSQL) error {
 			Msg("PostgreSQLClient.Init: connection is successful")
 	}
 	return nil
+}
+
+func (p *PostgreSQLClient) DoRequest(interfaceName string, model, value any) (resp any, err error) {
+	switch interfaceName {
+	case INSERT:
+		resp, err = p.DB.Model(model).Insert(value)
+	case UPDATE:
+		resp, err = p.DB.Model(model).Update(value)
+	default:
+		return nil, errors.New("PostgreSQLClient.DoRequest: wrong interfaceName " + interfaceName)
+	}
+	return
 }
