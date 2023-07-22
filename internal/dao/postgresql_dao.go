@@ -75,3 +75,33 @@ func (p *PgDAO) UpdateUserByPk(user *model.UserBasic) error {
 	_, err := clt.DB.Model(user).WherePK().Update(user)
 	return err
 }
+
+// SetUserStatus 设置用户状态
+func (p *PgDAO) SetUserStatus(user *model.UserBasic, status int) error {
+	user.Status = status
+	return p.UpdateUserByPk(user)
+}
+
+// NormalizeUser 恢复用户正常状态
+func (p *PgDAO) NormalizeUser(user *model.UserBasic) error {
+	if user.Status != model.UserStatusNormal {
+		return p.SetUserStatus(user, model.UserStatusNormal)
+	}
+	return nil
+}
+
+// DisableUser 封禁用户
+func (p *PgDAO) DisableUser(user *model.UserBasic) error {
+	if user.Status != model.UserStatusDisabled {
+		return p.SetUserStatus(user, model.UserStatusDisabled)
+	}
+	return nil
+}
+
+// LogicDeleteUser 逻辑删除用户
+func (p *PgDAO) LogicDeleteUser(user *model.UserBasic) error {
+	if user.Status != model.UserStatusDeleted {
+		return p.SetUserStatus(user, model.UserStatusDeleted)
+	}
+	return nil
+}
