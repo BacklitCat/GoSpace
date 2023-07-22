@@ -4,7 +4,6 @@ import (
 	"GoSpace/internal/client"
 	"GoSpace/internal/errno"
 	"GoSpace/internal/model"
-	"fmt"
 	"github.com/go-pg/pg/v10"
 )
 
@@ -12,6 +11,9 @@ type PgDAO struct {
 }
 
 func (p *PgDAO) CreateUser(user *model.UserBasic) error {
+	if len(user.Email) == 0 && len(user.Phone) == 0 {
+		return errno.NewErrorNo(nil, errno.ErrSignUpUnknownEmailOrPhone)
+	}
 	clt := client.ClientManager.GetPgClient()
 	_, err := clt.DB.Model(user).Insert(user)
 	if err != nil {
@@ -33,8 +35,10 @@ func (p *PgDAO) GetUserBasic(user *model.UserBasic) error {
 }
 
 func (p *PgDAO) GetUserBasicByEmail(user *model.UserBasic) error {
+	if len(user.Email) == 0 {
+		return errno.NewErrorNo(nil, errno.ErrSelectUserUnknownEmailOrPhone)
+	}
 	clt := client.ClientManager.GetPgClient()
-	fmt.Println(user.Email)
 	err := clt.DB.Model(user).
 		Where("email = ?", user.Email).
 		Select()
@@ -50,6 +54,9 @@ func (p *PgDAO) GetUserBasicByEmail(user *model.UserBasic) error {
 }
 
 func (p *PgDAO) GetUserBasicByPhone(user *model.UserBasic) error {
+	if len(user.Phone) == 0 {
+		return errno.NewErrorNo(nil, errno.ErrSelectUserUnknownEmailOrPhone)
+	}
 	clt := client.ClientManager.GetPgClient()
 	err := clt.DB.Model(user).
 		Where("phone = ?", user.Phone).
