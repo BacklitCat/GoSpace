@@ -64,3 +64,14 @@ func (p *PgDAO) GetUserByPhone(user *model.UserBasic) error {
 	}
 	return nil
 }
+
+// UpdateUserByPk 设置用户状态
+// 根据主键找不到也不会报错
+func (p *PgDAO) UpdateUserByPk(user *model.UserBasic) error {
+	if user.Id <= 0 {
+		return errno.NewErrorNo(nil, errno.ErrSelectUserById)
+	}
+	clt := client.ClientManager.GetPgClient()
+	_, err := clt.DB.Model(user).WherePK().Update(user)
+	return err
+}
