@@ -18,3 +18,7 @@ func (m *Manager) InitClient() error {
 	}
 	return nil
 }
+
+func (m *Manager) GetPgClient() PostgreSQLClient {
+	return m.PgClient
+}
