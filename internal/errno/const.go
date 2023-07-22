@@ -19,6 +19,7 @@ const (
 // 查询用户信息错误
 const (
 	ErrSelectUser = 2001000 + iota
+	ErrSelectUserById
 	ErrSelectUserByEmailEmpty
 	ErrSelectUserByPhoneEmpty
 	ErrSelectUserUnknownEmailOrPhone
@@ -36,6 +37,7 @@ var ErrMsgMap = map[int]string{
 	ErrSignUpEmailOrPhoneDuplicate: "您使用的手机号或邮箱已被注册",
 
 	ErrSelectUser:                    "查询用户信息错误",
+	ErrSelectUserById:                "通过该ID查询用户结果为空",
 	ErrSelectUserByEmailEmpty:        "通过该邮箱查询用户结果为空",
 	ErrSelectUserByPhoneEmpty:        "通过该手机查询用户结果为空",
 	ErrSelectUserUnknownEmailOrPhone: "查询用户信息需要邮箱或手机号",
