@@ -7,12 +7,6 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-const (
-	INSERT = "INSERT"
-	UPDATE = "UPDATE"
-	SELECT = "SELECT"
-)
-
 type PostgreSQLClient struct {
 	DB     *pg.DB
 	Option *pg.Options
