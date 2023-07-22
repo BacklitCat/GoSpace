@@ -4,23 +4,19 @@ import (
 	"GoSpace/internal/client"
 	"GoSpace/internal/errno"
 	"GoSpace/internal/model"
-	"GoSpace/internal/util"
 	"github.com/go-pg/pg/v10"
 )
 
-type PgDAO struct {
+type PostgresqlDAO struct {
 }
+
+var PgDAO PostgresqlDAO
 
 // CreateUser 创建用户
 // 需要至少传递邮箱/手机号其中之一；入参HashPwd是明文密码，在该函数生成盐，并将明文密码加盐，哈希加密后替换
-func (p *PgDAO) CreateUser(user *model.UserBasic) (err error) {
+func (p *PostgresqlDAO) CreateUser(user *model.UserBasic) (err error) {
 	if len(user.Email) == 0 && len(user.Phone) == 0 {
-		return errno.NewErrorNo(nil, errno.ErrSignUpUnknownEmailOrPhone)
-	}
-	user.Salt = util.RandStringBytesMaskImprSrcUnsafe(8)
-	user.HashPwd, err = util.HashSalt(user.HashPwd, user.Salt)
-	if err != nil {
-		return errno.NewErrorNo(err, errno.ErrUtilHashSalt)
+		return errno.NewErrorNo(nil, errno.ErrSignUpUnknownEmailAndPhone)
 	}
 
 	clt := client.ClientManager.GetPgClient()
@@ -34,18 +30,18 @@ func (p *PgDAO) CreateUser(user *model.UserBasic) (err error) {
 	return nil
 }
 
-func (p *PgDAO) GetUserBasic(user *model.UserBasic) error {
+func (p *PostgresqlDAO) GetUserBasic(user *model.UserBasic) error {
 	if len(user.Email) > 0 {
 		return p.GetUserBasicByEmail(user)
 	} else if len(user.Phone) > 0 {
 		return p.GetUserBasicByPhone(user)
 	}
-	return errno.NewErrorNo(nil, errno.ErrSelectUserUnknownEmailOrPhone)
+	return errno.NewErrorNo(nil, errno.ErrSelectUserUnknownEmailAndPhone)
 }
 
-func (p *PgDAO) GetUserBasicByEmail(user *model.UserBasic) error {
+func (p *PostgresqlDAO) GetUserBasicByEmail(user *model.UserBasic) error {
 	if len(user.Email) == 0 {
-		return errno.NewErrorNo(nil, errno.ErrSelectUserUnknownEmailOrPhone)
+		return errno.NewErrorNo(nil, errno.ErrSelectUserUnknownEmailAndPhone)
 	}
 	clt := client.ClientManager.GetPgClient()
 	err := clt.DB.Model(user).
@@ -62,9 +58,9 @@ func (p *PgDAO) GetUserBasicByEmail(user *model.UserBasic) error {
 	return nil
 }
 
-func (p *PgDAO) GetUserBasicByPhone(user *model.UserBasic) error {
+func (p *PostgresqlDAO) GetUserBasicByPhone(user *model.UserBasic) error {
 	if len(user.Phone) == 0 {
-		return errno.NewErrorNo(nil, errno.ErrSelectUserUnknownEmailOrPhone)
+		return errno.NewErrorNo(nil, errno.ErrSelectUserUnknownEmailAndPhone)
 	}
 	clt := client.ClientManager.GetPgClient()
 	err := clt.DB.Model(user).
@@ -83,7 +79,7 @@ func (p *PgDAO) GetUserBasicByPhone(user *model.UserBasic) error {
 
 // UpdateUserBasicByPk 更新用户数据
 // 根据主键找不到也不会报错
-func (p *PgDAO) UpdateUserBasicByPk(user *model.UserBasic) error {
+func (p *PostgresqlDAO) UpdateUserBasicByPk(user *model.UserBasic) error {
 	if user.Id <= 0 {
 		return errno.NewErrorNo(nil, errno.ErrSelectUserById)
 	}
@@ -93,13 +89,13 @@ func (p *PgDAO) UpdateUserBasicByPk(user *model.UserBasic) error {
 }
 
 // SetUserStatus 设置用户状态
-func (p *PgDAO) SetUserStatus(user *model.UserBasic, status int) error {
+func (p *PostgresqlDAO) SetUserStatus(user *model.UserBasic, status int) error {
 	user.Status = status
 	return p.UpdateUserBasicByPk(user)
 }
 
 // NormalizeUser 恢复用户正常状态
-func (p *PgDAO) NormalizeUser(user *model.UserBasic) error {
+func (p *PostgresqlDAO) NormalizeUser(user *model.UserBasic) error {
 	if user.Status != model.UserStatusNormal {
 		return p.SetUserStatus(user, model.UserStatusNormal)
 	}
@@ -107,7 +103,7 @@ func (p *PgDAO) NormalizeUser(user *model.UserBasic) error {
 }
 
 // DisableUser 封禁用户
-func (p *PgDAO) DisableUser(user *model.UserBasic) error {
+func (p *PostgresqlDAO) DisableUser(user *model.UserBasic) error {
 	if user.Status != model.UserStatusDisabled {
 		return p.SetUserStatus(user, model.UserStatusDisabled)
 	}
@@ -115,7 +111,7 @@ func (p *PgDAO) DisableUser(user *model.UserBasic) error {
 }
 
 // LogicDeleteUser 逻辑删除用户
-func (p *PgDAO) LogicDeleteUser(user *model.UserBasic) error {
+func (p *PostgresqlDAO) LogicDeleteUser(user *model.UserBasic) error {
 	if user.Status != model.UserStatusDeleted {
 		return p.SetUserStatus(user, model.UserStatusDeleted)
 	}
