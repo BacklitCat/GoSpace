@@ -1,8 +1,14 @@
 package errno
 
+// util错误
+const (
+	ErrUtil = 1001000 + iota
+	ErrUtilHashSalt
+)
+
 // SQL错误
 const (
-	ErrSQL = 1001000 + iota
+	ErrSQL = 1002000 + iota
 	ErrSQLSyntax
 	ErrSQLQueryEmpty
 )
@@ -26,6 +32,9 @@ const (
 )
 
 var ErrMsgMap = map[int]string{
+	ErrUtil:         "内部util包错误",
+	ErrUtilHashSalt: "计算哈希密码时出现错误",
+
 	ErrSQL:           "SQL错误",
 	ErrSQLSyntax:     "SQL拼写错误",
 	ErrSQLQueryEmpty: "SQL查询为空",
