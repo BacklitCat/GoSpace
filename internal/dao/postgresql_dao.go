@@ -23,16 +23,16 @@ func (p *PgDAO) CreateUser(user *model.UserBasic) error {
 	return nil
 }
 
-func (p *PgDAO) GetUser(user *model.UserBasic) error {
+func (p *PgDAO) GetUserBasic(user *model.UserBasic) error {
 	if len(user.Email) > 0 {
-		return p.GetUserByEmail(user)
+		return p.GetUserBasicByEmail(user)
 	} else if len(user.Phone) > 0 {
-		return p.GetUserByPhone(user)
+		return p.GetUserBasicByPhone(user)
 	}
 	return errno.NewErrorNo(nil, errno.ErrSelectUserUnknownEmailOrPhone)
 }
 
-func (p *PgDAO) GetUserByEmail(user *model.UserBasic) error {
+func (p *PgDAO) GetUserBasicByEmail(user *model.UserBasic) error {
 	clt := client.ClientManager.GetPgClient()
 	fmt.Println(user.Email)
 	err := clt.DB.Model(user).
@@ -49,7 +49,7 @@ func (p *PgDAO) GetUserByEmail(user *model.UserBasic) error {
 	return nil
 }
 
-func (p *PgDAO) GetUserByPhone(user *model.UserBasic) error {
+func (p *PgDAO) GetUserBasicByPhone(user *model.UserBasic) error {
 	clt := client.ClientManager.GetPgClient()
 	err := clt.DB.Model(user).
 		Where("phone = ?", user.Phone).
@@ -65,9 +65,9 @@ func (p *PgDAO) GetUserByPhone(user *model.UserBasic) error {
 	return nil
 }
 
-// UpdateUserByPk 设置用户状态
+// UpdateUserBasicByPk 更新用户数据
 // 根据主键找不到也不会报错
-func (p *PgDAO) UpdateUserByPk(user *model.UserBasic) error {
+func (p *PgDAO) UpdateUserBasicByPk(user *model.UserBasic) error {
 	if user.Id <= 0 {
 		return errno.NewErrorNo(nil, errno.ErrSelectUserById)
 	}
@@ -79,7 +79,7 @@ func (p *PgDAO) UpdateUserByPk(user *model.UserBasic) error {
 // SetUserStatus 设置用户状态
 func (p *PgDAO) SetUserStatus(user *model.UserBasic, status int) error {
 	user.Status = status
-	return p.UpdateUserByPk(user)
+	return p.UpdateUserBasicByPk(user)
 }
 
 // NormalizeUser 恢复用户正常状态
