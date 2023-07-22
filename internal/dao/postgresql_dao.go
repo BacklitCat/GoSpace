@@ -4,18 +4,27 @@ import (
 	"GoSpace/internal/client"
 	"GoSpace/internal/errno"
 	"GoSpace/internal/model"
+	"GoSpace/internal/util"
 	"github.com/go-pg/pg/v10"
 )
 
 type PgDAO struct {
 }
 
-func (p *PgDAO) CreateUser(user *model.UserBasic) error {
+// CreateUser 创建用户
+// 需要至少传递邮箱/手机号其中之一；入参HashPwd是明文密码，在该函数生成盐，并将明文密码加盐，哈希加密后替换
+func (p *PgDAO) CreateUser(user *model.UserBasic) (err error) {
 	if len(user.Email) == 0 && len(user.Phone) == 0 {
 		return errno.NewErrorNo(nil, errno.ErrSignUpUnknownEmailOrPhone)
 	}
+	user.Salt = util.RandStringBytesMaskImprSrcUnsafe(8)
+	user.HashPwd, err = util.HashSalt(user.HashPwd, user.Salt)
+	if err != nil {
+		return errno.NewErrorNo(err, errno.ErrUtilHashSalt)
+	}
+
 	clt := client.ClientManager.GetPgClient()
-	_, err := clt.DB.Model(user).Insert(user)
+	_, err = clt.DB.Model(user).Insert(user)
 	if err != nil {
 		switch err.(pg.Error).Field('C') {
 		case "23505":
