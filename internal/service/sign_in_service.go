@@ -12,7 +12,7 @@ type SignInService struct {
 
 func (s *SignInService) SignIn(id int64, email, phone, pwd string) (bool, error) {
 	if len(email) == 0 && len(phone) == 0 {
-		return false, errno.NewErrorNo(nil, errno.ErrSelectUserUnknownEmailAndPhone)
+		return false, errno.NewErrorNo(nil, errno.ErrUnknownEmailAndPhone)
 	}
 	user := model.UserBasic{
 		Id:    id,
@@ -21,7 +21,7 @@ func (s *SignInService) SignIn(id int64, email, phone, pwd string) (bool, error)
 	}
 
 	if err := dao.PgDAO.GetUserBasic(&user); err != nil {
-		return false, err
+		return false, errno.NewErrorNo(err, errno.ErrNotExistEmailAndPhone)
 	}
 
 	tryHashPwd, err := util.HashSalt(pwd, user.Salt)
