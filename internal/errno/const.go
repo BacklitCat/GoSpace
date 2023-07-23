@@ -35,8 +35,9 @@ const (
 const (
 	ErrSignIn = 2002000 + iota
 	ErrSignInUnknownEmailAndPhone
-	ErrSignInEmailNotExist
-	ErrSignInPhoneNotExist
+	ErrSignInNotExistEmailAndPhone
+	ErrSignInNotExistEmail
+	ErrSignInNotExistPhone
 	ErrSignInWrongPwd
 	ErrSignInMaxRetries
 	ErrSignInUnsafe
@@ -63,12 +64,13 @@ var ErrMsgMap = map[int]string{
 	ErrSelectUserByPhoneEmpty:         "通过该手机查询用户结果为空",
 	ErrSelectUserUnknownEmailAndPhone: "查询用户信息需要邮箱或手机号",
 
-	ErrSignIn:                     "用户登陆阶段错误",
-	ErrSignInUnknownEmailAndPhone: "登陆账号需要邮箱或手机号",
-	ErrSignInEmailNotExist:        "该邮箱不存在",
-	ErrSignInPhoneNotExist:        "该手机号不存在",
-	ErrSignInWrongPwd:             "密码错误",
-	ErrSignInMaxRetries:           "已达到最大登陆次数",
-	ErrSignInUnsafe:               "该次登陆有风险",
-	ErrSignInDisabledStatus:       "账户被封禁",
+	ErrSignIn:                      "用户登陆阶段错误",
+	ErrSignInUnknownEmailAndPhone:  "登陆账号需要邮箱或手机号",
+	ErrSignInNotExistEmailAndPhone: "邮箱或手机号不存在",
+	ErrSignInNotExistEmail:         "该邮箱不存在",
+	ErrSignInNotExistPhone:         "该手机号不存在",
+	ErrSignInWrongPwd:              "密码错误",
+	ErrSignInMaxRetries:            "已达到最大登陆次数",
+	ErrSignInUnsafe:                "该次登陆有风险",
+	ErrSignInDisabledStatus:        "账户被封禁",
 }
