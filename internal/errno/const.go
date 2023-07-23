@@ -13,31 +13,35 @@ const (
 	ErrSQLQueryEmpty
 )
 
+// 用户Email/Phone错误
+const (
+	ErrEmailOrPhone = 2001000 + iota
+	ErrUnknownEmail
+	ErrUnknownPhone
+	ErrUnknownEmailAndPhone
+	ErrDuplicateEmailOrPhone
+	ErrNotExistEmail
+	ErrNotExistPhone
+	ErrNotExistEmailAndPhone
+)
+
 // 注册用户阶段错误
 const (
-	ErrSignUp = 2000000 + iota
-	ErrSignUpUnknownEmail
-	ErrSignUpUnknownPhone
-	ErrSignUpUnknownEmailAndPhone
-	ErrSignUpEmailOrPhoneDuplicate
+	ErrSignUp = 2002000 + iota
+	ErrSignUpTooMany
 )
 
 // 查询用户信息错误
 const (
-	ErrSelectUser = 2001000 + iota
-	ErrSelectUserById
+	ErrSelectUser = 2003000 + iota
+	ErrSelectUserByIdEmpty
 	ErrSelectUserByEmailEmpty
 	ErrSelectUserByPhoneEmpty
-	ErrSelectUserUnknownEmailAndPhone
 )
 
 // 用户登陆阶段错误
 const (
-	ErrSignIn = 2002000 + iota
-	ErrSignInUnknownEmailAndPhone
-	ErrSignInNotExistEmailAndPhone
-	ErrSignInNotExistEmail
-	ErrSignInNotExistPhone
+	ErrSignIn = 2004000 + iota
 	ErrSignInWrongPwd
 	ErrSignInMaxRetries
 	ErrSignInUnsafe
@@ -52,25 +56,26 @@ var ErrMsgMap = map[int]string{
 	ErrSQLSyntax:     "SQL拼写错误",
 	ErrSQLQueryEmpty: "SQL查询为空",
 
-	ErrSignUp:                      "注册用户阶段错误",
-	ErrSignUpUnknownEmail:          "注册账号需要邮箱",
-	ErrSignUpUnknownPhone:          "注册账号需要手机号",
-	ErrSignUpUnknownEmailAndPhone:  "注册账号需要邮箱或手机号",
-	ErrSignUpEmailOrPhoneDuplicate: "您使用的手机号或邮箱已被注册",
+	ErrEmailOrPhone:          "用户Email/Phone错误",
+	ErrUnknownEmail:          "Email参数为空",
+	ErrUnknownPhone:          "Phone参数为空",
+	ErrUnknownEmailAndPhone:  "需要邮箱或手机号",
+	ErrDuplicateEmailOrPhone: "邮箱或手机号已经注册",
+	ErrNotExistEmail:         "该邮箱不存在",
+	ErrNotExistPhone:         "该手机号不存在",
+	ErrNotExistEmailAndPhone: "邮箱或手机号不存在",
 
-	ErrSelectUser:                     "查询用户信息错误",
-	ErrSelectUserById:                 "通过该ID查询用户结果为空",
-	ErrSelectUserByEmailEmpty:         "通过该邮箱查询用户结果为空",
-	ErrSelectUserByPhoneEmpty:         "通过该手机查询用户结果为空",
-	ErrSelectUserUnknownEmailAndPhone: "查询用户信息需要邮箱或手机号",
+	ErrSignUp:        "注册用户阶段错误",
+	ErrSignUpTooMany: "注册次数过多",
 
-	ErrSignIn:                      "用户登陆阶段错误",
-	ErrSignInUnknownEmailAndPhone:  "登陆账号需要邮箱或手机号",
-	ErrSignInNotExistEmailAndPhone: "邮箱或手机号不存在",
-	ErrSignInNotExistEmail:         "该邮箱不存在",
-	ErrSignInNotExistPhone:         "该手机号不存在",
-	ErrSignInWrongPwd:              "密码错误",
-	ErrSignInMaxRetries:            "已达到最大登陆次数",
-	ErrSignInUnsafe:                "该次登陆有风险",
-	ErrSignInDisabledStatus:        "账户被封禁",
+	ErrSelectUser:             "查询用户信息错误",
+	ErrSelectUserByIdEmpty:    "通过该ID查询用户结果为空",
+	ErrSelectUserByEmailEmpty: "通过该邮箱查询用户结果为空",
+	ErrSelectUserByPhoneEmpty: "通过该手机查询用户结果为空",
+
+	ErrSignIn:               "用户登陆阶段错误",
+	ErrSignInWrongPwd:       "密码错误",
+	ErrSignInMaxRetries:     "已达到最大登陆次数",
+	ErrSignInUnsafe:         "该次登陆有风险",
+	ErrSignInDisabledStatus: "账户被封禁",
 }

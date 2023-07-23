@@ -16,7 +16,7 @@ var PgDAO PostgresqlDAO
 // 需要至少传递邮箱/手机号其中之一；入参HashPwd是明文密码，在该函数生成盐，并将明文密码加盐，哈希加密后替换
 func (p *PostgresqlDAO) CreateUser(user *model.UserBasic) (err error) {
 	if len(user.Email) == 0 && len(user.Phone) == 0 {
-		return errno.NewErrorNo(nil, errno.ErrSignUpUnknownEmailAndPhone)
+		return errno.NewErrorNo(nil, errno.ErrUnknownEmailAndPhone)
 	}
 
 	clt := client.ClientManager.GetPgClient()
@@ -24,7 +24,7 @@ func (p *PostgresqlDAO) CreateUser(user *model.UserBasic) (err error) {
 	if err != nil {
 		switch err.(pg.Error).Field('C') {
 		case "23505":
-			return errno.NewErrorNo(err, errno.ErrSignUpEmailOrPhoneDuplicate)
+			return errno.NewErrorNo(err, errno.ErrDuplicateEmailOrPhone)
 		}
 	}
 	return nil
@@ -36,12 +36,12 @@ func (p *PostgresqlDAO) GetUserBasic(user *model.UserBasic) error {
 	} else if len(user.Phone) > 0 {
 		return p.GetUserBasicByPhone(user)
 	}
-	return errno.NewErrorNo(nil, errno.ErrSelectUserUnknownEmailAndPhone)
+	return errno.NewErrorNo(nil, errno.ErrUnknownEmailAndPhone)
 }
 
 func (p *PostgresqlDAO) GetUserBasicByEmail(user *model.UserBasic) error {
 	if len(user.Email) == 0 {
-		return errno.NewErrorNo(nil, errno.ErrSelectUserUnknownEmailAndPhone)
+		return errno.NewErrorNo(nil, errno.ErrUnknownEmailAndPhone)
 	}
 	clt := client.ClientManager.GetPgClient()
 	err := clt.DB.Model(user).
@@ -60,7 +60,7 @@ func (p *PostgresqlDAO) GetUserBasicByEmail(user *model.UserBasic) error {
 
 func (p *PostgresqlDAO) GetUserBasicByPhone(user *model.UserBasic) error {
 	if len(user.Phone) == 0 {
-		return errno.NewErrorNo(nil, errno.ErrSelectUserUnknownEmailAndPhone)
+		return errno.NewErrorNo(nil, errno.ErrUnknownEmailAndPhone)
 	}
 	clt := client.ClientManager.GetPgClient()
 	err := clt.DB.Model(user).
@@ -81,7 +81,7 @@ func (p *PostgresqlDAO) GetUserBasicByPhone(user *model.UserBasic) error {
 // 根据主键找不到也不会报错
 func (p *PostgresqlDAO) UpdateUserBasicByPk(user *model.UserBasic) error {
 	if user.Id <= 0 {
-		return errno.NewErrorNo(nil, errno.ErrSelectUserById)
+		return errno.NewErrorNo(nil, errno.ErrSelectUserByIdEmpty)
 	}
 	clt := client.ClientManager.GetPgClient()
 	_, err := clt.DB.Model(user).WherePK().Update(user)
