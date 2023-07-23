@@ -12,7 +12,7 @@ type SignUpService struct {
 
 func (s *SignUpService) SignUp(email, phone, pwd string) (id int64, err error) {
 	if len(email) == 0 && len(phone) == 0 {
-		return 0, errno.NewErrorNo(nil, errno.ErrSignUpUnknownEmailAndPhone)
+		return 0, errno.NewErrorNo(nil, errno.ErrUnknownEmailAndPhone)
 	}
 
 	user := model.UserBasic{
