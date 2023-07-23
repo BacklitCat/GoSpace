@@ -21,6 +21,9 @@ func (s *SignUpService) SignUp(email, phone, pwd string) (id int64, err error) {
 	if len(phone) > 0 && !util.IsPhoneValid(&phone) {
 		return 0, errno.NewErrorNo(nil, errno.ErrNotValidPhone)
 	}
+	if len(pwd) > 0 && !util.IsPasswordValid(&pwd) {
+		return 0, errno.NewErrorNo(nil, errno.ErrNotValidPwd)
+	}
 
 	user := model.UserBasic{
 		HashPwd: pwd,

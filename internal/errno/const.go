@@ -13,7 +13,7 @@ const (
 	ErrSQLQueryEmpty
 )
 
-// 用户Email/Phone错误
+// 用户Email/Phone/Pwd错误
 const (
 	ErrEmailOrPhone = 2001000 + iota
 	ErrUnknownEmail
@@ -25,6 +25,7 @@ const (
 	ErrNotExistEmailAndPhone
 	ErrNotValidEmail
 	ErrNotValidPhone
+	ErrNotValidPwd
 )
 
 // 注册用户阶段错误
@@ -45,6 +46,7 @@ const (
 const (
 	ErrSignIn = 2004000 + iota
 	ErrSignInWrongPwd
+	ErrSignInWrongAccountOrPwd
 	ErrSignInMaxRetries
 	ErrSignInUnsafe
 	ErrSignInDisabledStatus
@@ -68,6 +70,7 @@ var ErrMsgMap = map[int]string{
 	ErrNotExistEmailAndPhone: "邮箱或手机号不存在",
 	ErrNotValidEmail:         "邮箱不合法",
 	ErrNotValidPhone:         "手机号不合法",
+	ErrNotValidPwd:           "密码不合法",
 
 	ErrSignUp:        "注册用户阶段错误",
 	ErrSignUpTooMany: "注册次数过多",
@@ -77,9 +80,10 @@ var ErrMsgMap = map[int]string{
 	ErrSelectUserByEmailEmpty: "通过该邮箱查询用户结果为空",
 	ErrSelectUserByPhoneEmpty: "通过该手机查询用户结果为空",
 
-	ErrSignIn:               "用户登陆阶段错误",
-	ErrSignInWrongPwd:       "密码错误",
-	ErrSignInMaxRetries:     "已达到最大登陆次数",
-	ErrSignInUnsafe:         "该次登陆有风险",
-	ErrSignInDisabledStatus: "账户被封禁",
+	ErrSignIn:                  "用户登陆阶段错误",
+	ErrSignInWrongPwd:          "密码错误",
+	ErrSignInWrongAccountOrPwd: "账户或密码错误",
+	ErrSignInMaxRetries:        "已达到最大登陆次数",
+	ErrSignInUnsafe:            "该次登陆有风险",
+	ErrSignInDisabledStatus:    "账户被封禁",
 }
