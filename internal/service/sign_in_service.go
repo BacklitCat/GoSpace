@@ -14,6 +14,13 @@ func (s *SignInService) SignIn(id int64, email, phone, pwd string) (bool, error)
 	if len(email) == 0 && len(phone) == 0 {
 		return false, errno.NewErrorNo(nil, errno.ErrUnknownEmailAndPhone)
 	}
+	if len(email) > 0 && !util.IsEmailValid(&email) {
+		return false, errno.NewErrorNo(nil, errno.ErrNotValidEmail)
+	}
+	if len(phone) > 0 && !util.IsPhoneValid(&phone) {
+		return false, errno.NewErrorNo(nil, errno.ErrNotValidPhone)
+	}
+
 	user := model.UserBasic{
 		Id:    id,
 		Email: email,

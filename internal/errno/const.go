@@ -23,6 +23,8 @@ const (
 	ErrNotExistEmail
 	ErrNotExistPhone
 	ErrNotExistEmailAndPhone
+	ErrNotValidEmail
+	ErrNotValidPhone
 )
 
 // 注册用户阶段错误
@@ -64,6 +66,8 @@ var ErrMsgMap = map[int]string{
 	ErrNotExistEmail:         "该邮箱不存在",
 	ErrNotExistPhone:         "该手机号不存在",
 	ErrNotExistEmailAndPhone: "邮箱或手机号不存在",
+	ErrNotValidEmail:         "邮箱不合法",
+	ErrNotValidPhone:         "手机号不合法",
 
 	ErrSignUp:        "注册用户阶段错误",
 	ErrSignUpTooMany: "注册次数过多",
