@@ -1,6 +1,7 @@
 package service
 
 import (
+	"GoSpace/internal/common"
 	"GoSpace/internal/dao"
 	"GoSpace/internal/errno"
 	"GoSpace/internal/model"
@@ -10,19 +11,19 @@ import (
 type SignInService struct {
 }
 
-func (s *SignInService) SignIn(id int64, email, phone, pwd string) (bool, error) {
+func (s *SignInService) SignIn(id int64, email, phone, pwd string) (bool, int, error) {
 	if len(email) == 0 && len(phone) == 0 {
-		return false, errno.NewErrorNo(nil, errno.ErrUnknownEmailAndPhone)
+		return false, -1, errno.NewErrorNo(nil, common.ErrUnknownEmailAndPhone)
 	}
 	if len(email) > 0 && !util.IsEmailValid(&email) {
-		return false, errno.NewErrorNo(nil, errno.ErrNotValidEmail)
+		return false, -1, errno.NewErrorNo(nil, common.ErrNotValidEmail)
 	}
 	if len(phone) > 0 && !util.IsPhoneValid(&phone) {
-		return false, errno.NewErrorNo(nil, errno.ErrNotValidPhone)
+		return false, -1, errno.NewErrorNo(nil, common.ErrNotValidPhone)
 	}
 	if len(pwd) > 0 && !util.IsPasswordValid(&pwd) {
 		// 如果升级密码要求，这里就不能再校验，避免老密码无法登陆
-		return false, errno.NewErrorNo(nil, errno.ErrSignInWrongAccountOrPwd)
+		return false, -1, errno.NewErrorNo(nil, common.ErrSignInWrongAccountOrPwd)
 	}
 
 	user := model.UserBasic{
@@ -32,17 +33,20 @@ func (s *SignInService) SignIn(id int64, email, phone, pwd string) (bool, error)
 	}
 
 	if err := dao.PgDAO.GetUserBasic(&user); err != nil {
-		return false, errno.NewErrorNo(err, errno.ErrNotExistEmailAndPhone)
+		return false, -1, errno.NewErrorNo(err, common.ErrNotExistEmailAndPhone)
 	}
 
 	tryHashPwd, err := util.HashSalt(pwd, user.Salt)
 	if err != nil {
-		return false, errno.NewErrorNo(err, errno.ErrUtilHashSalt)
+		return false, -1, errno.NewErrorNo(err, common.ErrUtilHashSalt)
 	}
 
 	if user.HashPwd == tryHashPwd {
-		return true, nil
+		if user.Status == common.UserStatusNormal {
+			return true, common.UserStatusNormal, nil
+		}
+		return false, user.Status, errno.NewErrorNo(nil, common.ErrSignInUnNormalStatus)
 	}
 
-	return false, errno.NewErrorNo(nil, errno.ErrSignInWrongPwd)
+	return false, -1, errno.NewErrorNo(nil, common.ErrSignInWrongPwd)
 }
