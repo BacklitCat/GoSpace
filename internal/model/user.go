@@ -20,12 +20,6 @@ CREATE TABLE user_basic (
 SELECT setval('user_basic_id_seq', 10000000);
 */
 
-const (
-	UserStatusNormal   = iota // 正常
-	UserStatusDisabled        // 被封禁
-	UserStatusDeleted         // 被删除
-)
-
 type UserBasic struct {
 	tableName struct{} `pg:"user_basic"`
 	// 用户 id，bigint 类型，主键，不为空，生成方式为 identity

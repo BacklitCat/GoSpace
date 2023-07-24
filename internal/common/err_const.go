@@ -1,4 +1,4 @@
-package errno
+package common
 
 // util错误
 const (
@@ -49,7 +49,7 @@ const (
 	ErrSignInWrongAccountOrPwd
 	ErrSignInMaxRetries
 	ErrSignInUnsafe
-	ErrSignInDisabledStatus
+	ErrSignInUnNormalStatus
 )
 
 var ErrMsgMap = map[int]string{
@@ -85,5 +85,5 @@ var ErrMsgMap = map[int]string{
 	ErrSignInWrongAccountOrPwd: "账户或密码错误",
 	ErrSignInMaxRetries:        "已达到最大登陆次数",
 	ErrSignInUnsafe:            "该次登陆有风险",
-	ErrSignInDisabledStatus:    "账户被封禁",
+	ErrSignInUnNormalStatus:    "账户状态异常",
 }

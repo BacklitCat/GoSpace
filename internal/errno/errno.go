@@ -1,5 +1,7 @@
 package errno
 
+import "GoSpace/internal/common"
+
 type ErrorNo struct {
 	Err error
 	No  int
@@ -7,7 +9,7 @@ type ErrorNo struct {
 
 func (e ErrorNo) Error() string {
 	if e.No > 0 {
-		return ErrMsgMap[e.No]
+		return common.ErrMsgMap[e.No]
 	}
 	return e.Err.Error()
 }
